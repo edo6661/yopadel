@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>YOPADEL – Platform Padel Profesional</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+/* ── RESET & BASE ─────────────────────────────── */
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100vh;background:#111a12;color:#EEF2EE;font-family:'DM Sans',sans-serif;font-size:14px}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:#192019}::-webkit-scrollbar-thumb{background:#2d4030;border-radius:3px}
+input,select,button{font-family:inherit;font-size:14px}
+
+/* ── COLORS (CSS vars) ────────────────────────── */
+:root{
+  --bg:#111a12;--surface:#192019;--card:#1e2a1f;--border:#2d4030;
+  --green:#5D7A62;--green-lt:#9AA780;--green-dk:#3d5240;
+  --orange:#BD642F;--gold:#F0B36F;--silver:#9CACA0;
+  --text:#EEF2EE;--muted:#6b8870;--red:#c0392b;--white:#ffffff;
+}
+
+/* ── LAYOUT ────────────────────────────────────── */
+.app{min-height:100vh;display:flex;flex-direction:column}
+.main{flex:1;padding:16px;max-width:960px;margin:0 auto;width:100%}
+.hidden{display:none!important}
+
+/* ── NAV ───────────────────────────────────────── */
+nav{display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:var(--green-dk);border-bottom:2px solid #5D7A6255;position:sticky;top:0;z-index:100;gap:10px;height:54px}
+.nav-logo{display:flex;align-items:center;gap:8px;flex-shrink:0;text-decoration:none}
+.nav-logo-icon{width:32px;height:32px;background:var(--green);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.nav-logo-text{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:4px;color:var(--text);line-height:1}
+.nav-logo-text span{color:var(--gold)}
+.nav-tabs{display:flex;gap:2px;background:#3d524099;padding:3px;border-radius:10px;border:1px solid var(--border)}
+.nav-tab{padding:5px 13px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all .2s;white-space:nowrap}
+.nav-tab.active{background:var(--green);color:var(--white)}
+.nav-tab:hover:not(.active){color:var(--text);background:#2d403055}
+
+/* ── CARDS ─────────────────────────────────────── */
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:14px}
+.card-title{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:2px;color:var(--green-lt);margin-bottom:13px;display:flex;align-items:center;gap:6px}
+
+/* ── HERO ──────────────────────────────────────── */
+.hero{position:relative;overflow:hidden;background:linear-gradient(135deg,var(--green-dk) 0%,var(--surface) 60%,#1a2510 100%);border:1px solid #5D7A6240;border-radius:18px;padding:28px 22px 24px;margin-bottom:16px;text-align:center}
+.hero::before{content:'';position:absolute;top:-40px;right:-40px;width:200px;height:200px;background:radial-gradient(circle,#5D7A6220,transparent 70%);border-radius:50%}
+.hero::after{content:'';position:absolute;bottom:-30px;left:-30px;width:160px;height:160px;background:radial-gradient(circle,#BD642F15,transparent 70%);border-radius:50%}
+.hero-badge{display:inline-flex;align-items:center;gap:5px;background:#5D7A6220;border:1px solid #5D7A6240;border-radius:20px;padding:4px 12px;font-size:11px;color:var(--green-lt);font-weight:600;letter-spacing:1px;margin-bottom:12px;text-transform:uppercase}
+.hero-title{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:8px;line-height:1;margin-bottom:4px}
+.hero-title span{color:var(--gold)}
+.hero-sub{color:var(--muted);font-size:13px;margin-bottom:22px}
+.hero-stats{display:flex;justify-content:center}
+.hs{text-align:center;padding:0 20px;position:relative}
+.hs+.hs::before{content:'';position:absolute;left:0;top:20%;height:60%;width:1px;background:var(--border)}
+.hs-val{font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;color:var(--green);line-height:1}
+.hs-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:3px}
+
+/* ── BUTTONS ───────────────────────────────────── */
+.btn{padding:8px 16px;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .18s;display:inline-flex;align-items:center;justify-content:center;gap:5px;white-space:nowrap;line-height:1.3}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-primary{background:var(--green);color:var(--white);box-shadow:0 3px 12px #5D7A6240}
+.btn-primary:hover:not(:disabled){background:#6a8f6f;transform:translateY(-1px)}
+.btn-orange{background:var(--orange);color:var(--white)}
+.btn-orange:hover:not(:disabled){background:#cc7040;transform:translateY(-1px)}
+.btn-secondary{background:var(--surface);color:var(--text);border:1px solid var(--border)}
+.btn-secondary:hover:not(:disabled){border-color:var(--green);color:var(--green-lt)}
+.btn-danger{background:#c0392b15;color:var(--red);border:1px solid #c0392b35}
+.btn-danger:hover:not(:disabled){background:#c0392b28}
+.btn-warn{background:#BD642F15;color:var(--orange);border:1px solid #BD642F35}
+.btn-warn:hover:not(:disabled){background:#BD642F28}
+.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border)}
+.btn-ghost:hover:not(:disabled){color:var(--text);border-color:#5D7A6250}
+.btn-lg{padding:13px 22px;font-size:15px;border-radius:12px}
+.btn-block{width:100%}
+.btn-sm{padding:4px 10px;font-size:11px;border-radius:7px}
+.btn-xs{padding:3px 8px;font-size:10px;border-radius:6px}
+
+/* ── GRID ──────────────────────────────────────── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+
+/* ── SECTION HEADER ────────────────────────────── */
+.sh{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:8px}
+.sh-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:var(--green-lt)}
+.sh-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+
+/* ── BADGES ────────────────────────────────────── */
+.badge{padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;display:inline-flex;align-items:center;gap:4px}
+.badge-live{background:var(--green);color:var(--white)}
+.badge-done{background:#2d403070;color:var(--muted)}
+.badge-upcoming{background:#BD642F20;color:var(--orange);border:1px solid #BD642F30}
+.badge-type{background:#5D7A6218;color:var(--green-lt);border:1px solid #5D7A6228}
+.badge-court{border-radius:6px;padding:2px 7px;font-size:10px;font-weight:700;color:var(--white)}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 1.3s infinite;flex-shrink:0;display:inline-block}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
+@keyframes bounce{from{transform:translateY(0)}to{transform:translateY(-8px)}}
+
+/* ── MATCH CARD ────────────────────────────────── */
+.mc{background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:13px;margin-bottom:9px;cursor:pointer;transition:all .2s;position:relative;border-left:3px solid transparent}
+.mc.live{border-left-color:var(--green)}
+.mc.finished{border-left-color:#6b887050}
+.mc:hover{border-color:#5D7A6250;transform:translateY(-1px)}
+.mc-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;gap:6px;flex-wrap:wrap}
+.mc-meta{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.mc-status{display:flex;align-items:center;gap:5px}
+.mc-teams{display:flex;align-items:center;gap:8px}
+.mc-team{flex:1;min-width:0}
+.mc-team.r{text-align:right}
+.mc-tname{font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mc-tname.win{color:var(--gold)}
+.mc-tplayers{font-size:11px;color:var(--muted);margin-top:1px}
+.mc-vs{color:var(--muted);font-size:11px;font-weight:700;flex-shrink:0}
+.mc-scores{display:flex;gap:5px;justify-content:flex-end;margin-top:8px}
+.set-pill{background:var(--card);border:1px solid var(--border);border-radius:7px;padding:3px 9px;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700}
+.set-pill .w{color:var(--green)}
+
+/* ── COURT GRID ────────────────────────────────── */
+.court-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:4px}
+.court-panel{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.court-panel-head{padding:10px 14px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border)}
+.court-panel-name{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:2px;flex:1}
+.court-panel-body{padding:12px}
+.cmm{background:var(--surface);border-radius:10px;padding:10px 12px;margin-bottom:7px;cursor:pointer;border:1px solid transparent;transition:all .15s}
+.cmm:hover{border-color:#5D7A6240}
+.cmm:last-child{margin-bottom:0}
+.cmm-teams{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.cmm-team{flex:1;font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cmm-team.r{text-align:right}
+.cmm-vs{font-size:10px;color:var(--muted);flex-shrink:0}
+.cmm-scores{display:flex;justify-content:flex-end;gap:4px}
+.cmm-score{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;background:var(--card);border-radius:6px;padding:2px 7px}
+.cmm-score .w{color:var(--green)}
+.court-empty{padding:20px;text-align:center;color:var(--muted);font-size:13px}
+
+/* ── COMPETITION CARD ──────────────────────────── */
+.cc{background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:14px;margin-bottom:10px;cursor:pointer;transition:all .2s}
+.cc:hover{border-color:#5D7A6250}
+.cc-name{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;margin-bottom:4px}
+.cc-meta{font-size:11px;color:var(--muted);display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.cc-stats{display:flex;gap:12px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+.cc-stat{text-align:center}
+.cc-stat-val{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;color:var(--green)}
+.cc-stat-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+
+/* ── SCOREBOARD ────────────────────────────────── */
+.sb{background:linear-gradient(180deg,var(--green-dk) 0%,var(--card) 100%);border:1px solid #5D7A6235;border-radius:16px;overflow:hidden}
+.sb-head{display:flex;align-items:center;gap:10px;padding:13px 17px;border-bottom:1px solid var(--border)}
+.sb-back{background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px;padding:0 4px;transition:color .2s}
+.sb-back:hover{color:var(--text)}
+.sb-htitle{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:2px;flex:1}
+.sb-court-tag{display:flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;color:var(--white)}
+.sb-teams{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:18px 17px 10px;gap:10px}
+.sbt{text-align:center}
+.sbt-name{font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:2px;line-height:1.2}
+.sbt-players{font-size:11px;color:var(--muted);margin-top:3px}
+.sbt-vs{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--border)}
+.sb-sets{display:flex;justify-content:center;gap:7px;padding:0 17px 12px}
+.sb-set{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:7px 12px;text-align:center;min-width:65px}
+.sb-set.cur{border-color:var(--green);background:#5D7A6212}
+.sb-set-lbl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.sb-set-sc{font-family:'JetBrains Mono',monospace;font-size:19px;font-weight:700}
+.sb-set-sc .w{color:var(--green)}
+.amo-wrap{padding:0 17px 12px}
+.amo-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.amo-side{background:var(--surface);border-radius:11px;padding:12px 14px}
+.amo-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px}
+.amo-score{font-family:'JetBrains Mono',monospace;font-size:38px;font-weight:700;line-height:1;margin-bottom:6px}
+.amo-prog{font-size:10px;color:var(--muted);margin-bottom:6px}
+.amo-track{height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+.amo-fill{height:100%;border-radius:3px;transition:width .3s ease}
+.sb-game{border-top:1px solid var(--border);border-bottom:1px solid var(--border);display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:12px 17px;text-align:center}
+.gpts{font-family:'Bebas Neue',sans-serif;font-size:46px;line-height:1}
+.gpts.lead{color:var(--green)}
+.gpts-lbl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.g-sep{color:var(--border);font-size:26px}
+.sb-games-row{display:flex;justify-content:space-between;padding:7px 17px 4px;font-size:11px;color:var(--muted)}
+.note{margin:0 17px 10px;border-radius:8px;padding:7px 11px;font-size:11px;text-align:center;font-weight:600}
+.note-amo{background:#5D7A6212;border:1px solid #5D7A6225;color:var(--green-lt)}
+.note-tb{background:#F0B36F12;border:1px solid #F0B36F30;color:var(--gold)}
+.sb-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px 17px}
+.sc-btn{padding:15px 12px;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;border:none;transition:all .15s;text-align:left;display:flex;flex-direction:column;gap:3px;width:100%}
+.sc-btn-tm{font-size:10px;color:rgba(255,255,255,.45);display:block}
+.sc-btn-a{background:#5D7A6218;border:1px solid #5D7A6235;color:var(--text)}
+.sc-btn-a:hover{background:#5D7A6232;transform:scale(1.02)}
+.sc-btn-b{background:#BD642F15;border:1px solid #BD642F30;color:var(--text)}
+.sc-btn-b:hover{background:#BD642F28;transform:scale(1.02)}
+
+/* ── LEADERBOARD ───────────────────────────────── */
+.lb-hdr{display:grid;grid-template-columns:26px 1fr repeat(4,46px);gap:5px;padding:5px 12px;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:4px}
+.lb-hdr span:nth-child(n+3){text-align:center}
+.lb-row{display:grid;grid-template-columns:26px 1fr repeat(4,46px);align-items:center;gap:5px;padding:9px 12px;border-radius:9px;margin-bottom:3px;font-size:13px}
+.lb-row:nth-child(1){background:#F0B36F12;border:1px solid #F0B36F28}
+.lb-row:nth-child(2){background:#9CACA008;border:1px solid #9CACA018}
+.lb-row:nth-child(3){background:#BD642F08;border:1px solid #BD642F18}
+.lb-row:nth-child(n+4){background:var(--surface);border:1px solid var(--border)}
+.lb-rank{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--muted);font-size:11px}
+.lb-name{font-weight:600}
+.lb-num{font-family:'JetBrains Mono',monospace;text-align:center;font-size:11px}
+
+/* ── FORM ──────────────────────────────────────── */
+.fg{margin-bottom:11px}
+.flbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;display:block}
+.finput{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:9px 12px;color:var(--text);outline:none;transition:border-color .2s}
+.finput:focus{border-color:var(--green)}
+.finput::placeholder{color:var(--muted)}
+select.finput option{background:var(--card)}
+
+/* ── PLAYER ITEM ───────────────────────────────── */
+.pi{display:flex;align-items:center;gap:9px;background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:9px 12px;margin-bottom:6px;cursor:pointer;transition:all .15s}
+.pi:hover{border-color:#5D7A6240}
+.pi.selA{border-color:var(--green);background:#5D7A6210}
+.pi.selB{border-color:var(--orange);background:#BD642F08}
+.pi.selG{border-color:var(--green-lt);background:#9AA78010}
+.pi.locked{opacity:.3;cursor:not-allowed;pointer-events:none}
+.pi-av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#5D7A6240,#9AA78030);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--green-lt);flex-shrink:0}
+.pi-name{flex:1;font-size:13px;font-weight:500}
+.pi-rating{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold)}
+
+/* ── COURT CHIP ────────────────────────────────── */
+.court-chip{display:flex;align-items:center;gap:5px;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:2px solid var(--border);background:var(--surface);color:var(--text);transition:all .2s;margin-right:6px;margin-bottom:6px}
+.court-chip:hover{border-color:#5D7A6250}
+
+/* ── GAME TYPE CARD ────────────────────────────── */
+.gt-card{background:var(--surface);border:2px solid var(--border);border-radius:11px;padding:12px 8px;cursor:pointer;text-align:center;transition:all .2s}
+.gt-card.sel{border-color:var(--green);background:#5D7A6222}
+.gt-card:hover:not(.sel){border-color:#5D7A6250}
+.gt-icon{font-size:22px;margin-bottom:5px}
+.gt-name{font-weight:700;font-size:12px}
+.gt-desc{font-size:10px;color:var(--muted);margin-top:2px}
+
+/* ── SCHEDULE ROUND ────────────────────────────── */
+.round-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 13px;margin-bottom:6px}
+.round-num{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.round-match{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:13px;font-weight:600}
+.round-court{font-size:10px;margin-top:4px;font-weight:600}
+
+/* ── WINNER ────────────────────────────────────── */
+.win-overlay{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px}
+.win-card{background:var(--card);border:2px solid var(--green);border-radius:22px;padding:36px 28px;text-align:center;max-width:360px;width:100%;box-shadow:0 0 60px #5D7A6220}
+.win-trophy{font-size:54px;margin-bottom:12px;display:block;animation:bounce .6s infinite alternate}
+.win-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:6px}
+.win-name{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:3px;color:var(--gold)}
+.win-sub{color:var(--muted);font-size:12px;margin:5px 0 18px}
+
+/* ── MISC ──────────────────────────────────────── */
+.empty{text-align:center;padding:32px 20px;color:var(--muted)}
+.empty-icon{font-size:34px;margin-bottom:9px}
+.empty-txt{font-size:13px}
+.info-box{background:#5D7A6210;border:1px solid #5D7A6222;border-radius:9px;padding:9px 12px;font-size:12px;color:var(--green-lt);margin-bottom:11px;line-height:1.5}
+.warn-box{background:#BD642F10;border:1px solid #BD642F22;border-radius:9px;padding:9px 12px;font-size:12px;color:var(--orange);margin-bottom:11px;line-height:1.5}
+.reset-box{background:#c0392b08;border:1px solid #c0392b22;border-radius:11px;padding:13px;margin-top:12px}
+.reset-title{font-weight:600;color:var(--red);margin-bottom:4px;font-size:13px}
+.reset-desc{font-size:11px;color:var(--muted);margin-bottom:9px}
+.tag{display:inline-flex;align-items:center;gap:3px;background:#5D7A6214;color:var(--green-lt);font-size:10px;padding:2px 7px;border-radius:5px;font-weight:600;text-transform:uppercase}
+.sync-indicator{display:inline-flex;align-items:center;gap:4px;font-size:10px;color:var(--green);font-weight:600;background:#5D7A6212;border:1px solid #5D7A6225;border-radius:20px;padding:2px 8px}
+.sync-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse 1s infinite;display:inline-block}
+.divider{border:none;border-top:1px solid var(--border);margin:13px 0}
+.comp-tab-bar{display:flex;gap:0;background:var(--surface);border-bottom:1px solid var(--border)}
+.comp-tab{flex:1;padding:10px;border:none;background:transparent;color:var(--muted);font-weight:600;font-size:12px;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s}
+.comp-tab.active{color:var(--green);border-bottom-color:var(--green)}
+.comp-court-chip{display:flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;color:var(--white);letter-spacing:.5px;margin-right:5px;margin-bottom:5px}
+@media(max-width:600px){
+  .g3{grid-template-columns:1fr 1fr}.g4{grid-template-columns:1fr 1fr}
+  .hero-title{font-size:38px}.court-grid{grid-template-columns:1fr}
+  .lb-hdr,.lb-row{grid-template-columns:22px 1fr repeat(3,38px)}
+  nav{flex-wrap:wrap;height:auto;padding:8px 12px}
+  .nav-tabs{width:100%}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">
+      <div class="nav-logo-icon">🎾</div>
+      <div class="nav-logo-text">YO<span>PADEL</span></div>
+    </div>
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="showTab('home')" id="tab-home">Home</button>
+      <button class="nav-tab" onclick="showTab('courts')" id="tab-courts">Lapangan</button>
+      <button class="nav-tab" onclick="showTab('match')" id="tab-match">Match</button>
+      <button class="nav-tab" onclick="showTab('compete')" id="tab-compete">Kompetisi</button>
+      <button class="nav-tab" onclick="showTab('players')" id="tab-players">Pemain</button>
+    </div>
+  </nav>
+
+  <div class="main">
+    <!-- HOME -->
+    <div id="page-home"></div>
+    <!-- COURTS -->
+    <div id="page-courts" class="hidden"></div>
+    <!-- MATCH -->
+    <div id="page-match" class="hidden"></div>
+    <!-- SCOREBOARD -->
+    <div id="page-scoreboard" class="hidden"></div>
+    <!-- COMPETE -->
+    <div id="page-compete" class="hidden"></div>
+    <!-- PLAYERS -->
+    <div id="page-players" class="hidden"></div>
+  </div>
+
+  <!-- WINNER OVERLAY -->
+  <div class="win-overlay hidden" id="winner-overlay" onclick="closeWinner()">
+    <div class="win-card" onclick="event.stopPropagation()">
+      <span class="win-trophy">🏆</span>
+      <div id="win-court-badge"></div>
+      <div class="win-lbl">Pemenang</div>
+      <div class="win-name" id="win-name"></div>
+      <div class="win-sub" id="win-sub"></div>
+      <div id="win-score" style="margin-bottom:18px"></div>
+      <button class="btn btn-primary btn-block" onclick="closeWinner()">Selesai</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════
+const AMERICANO_TARGET = 21;
+const COURT_COLORS = ['#5D7A62','#BD642F','#9AA780','#8B6914','#4a7a8a','#7a4a8a'];
+const GAME_TYPES = {
+  singles:    {label:'Singles',    perTeam:1,icon:'⚡',desc:'1 vs 1'},
+  doubles:    {label:'Doubles',    perTeam:2,icon:'🎾',desc:'2 vs 2'},
+  americano:  {label:'Americano',  perTeam:2,icon:'🌀',desc:'Race to 21'},
+  mexicano:   {label:'Mexicano',   perTeam:2,icon:'🎯',desc:'Rotate pairs'},
+  round_robin:{label:'Round Robin',perTeam:2,icon:'♻️',desc:'All vs All'},
+};
+
+let state = {
+  courts: [
+    {id:'c1',name:'Lapangan 1',color:'#5D7A62'},
+    {id:'c2',name:'Lapangan 2',color:'#BD642F'},
+    {id:'c3',name:'Lapangan 3',color:'#9AA780'},
+    {id:'c4',name:'Lapangan 4',color:'#8B6914'},
+  ],
+  players: [
+    {id:'p1',name:'Alex Santoso', rating:4.5},
+    {id:'p2',name:'Budi Pratama', rating:3.8},
+    {id:'p3',name:'Clara Dewi',   rating:4.1},
+    {id:'p4',name:'Dani Kusuma',  rating:3.5},
+    {id:'p5',name:'Eka Putra',    rating:4.3},
+    {id:'p6',name:'Fitra Lestari',rating:3.9},
+    {id:'p7',name:'Gilang Adi',   rating:4.0},
+    {id:'p8',name:'Hana Pertiwi', rating:3.7},
+  ],
+  matches: [],
+  comps: [],
+  liveMatchId: null,
+  currentTab: 'home',
+  matchView: 'list',    // list | manual | auto
+  compView: 'list',     // list | create | detail
+  viewCompId: null,
+  compDetailTab: 'matches',
+  // manual match setup
+  manualType: 'doubles',
+  manualTeamA: {name:'Tim A', players:[]},
+  manualTeamB: {name:'Tim B', players:[]},
+  manualCourt: 'c1',
+  manualCompId: '',
+  // auto match setup
+  autoType: 'americano',
+  autoPlayers: [],
+  autoCourts: ['c1'],
+  autoCompId: '',
+  autoSchedule: [],
+  // confirm resets
+  confirmReset: false,
+  confirmResetMatch: false,
+};
+
+function uid(){return Math.random().toString(36).slice(2,9)}
+
+// ═══════════════════════════════════════════════════════
+//  SCORE ENGINE
+// ═══════════════════════════════════════════════════════
+function advancePoint(match, side){
+  const m = JSON.parse(JSON.stringify(match));
+  if(m.isAmericano) return advanceAmo(m,side);
+  return advanceStd(m,side);
+}
+function advanceAmo(m,s){
+  m.americanoScores[s]++;
+  const [a,b]=[m.americanoScores[0],m.americanoScores[1]];
+  if((a>=AMERICANO_TARGET||b>=AMERICANO_TARGET)&&a!==b){m.status='finished';m.winner=a>b?0:1;m.endTime=Date.now();}
+  return m;
+}
+function advanceStd(m,s){
+  const set=m.sets[m.currentSet],pts=set.scores;
+  if(m.tiebreak){
+    pts[s]++;
+    if(pts[s]>=7&&pts[s]-pts[1-s]>=2){set.games[s]++;set.scores=[0,0];m.tiebreak=false;return checkSet(m,s);}
+    return m;
+  }
+  pts[s]++;
+  const [a,b]=[pts[0],pts[1]];
+  if(a>=3&&b>=3){
+    if(a===b)return m;
+    if(a-b>=2){set.scores=[0,0];set.games[0]++;return checkSet(m,0);}
+    if(b-a>=2){set.scores=[0,0];set.games[1]++;return checkSet(m,1);}
+    return m;
+  }
+  if(pts[s]>=4){set.scores=[0,0];set.games[s]++;return checkSet(m,s);}
+  return m;
+}
+function checkSet(m,s){
+  const g=m.sets[m.currentSet].games;
+  if(g[s]>=6&&g[s]-g[1-s]>=2)return endSet(m,s);
+  if(g[0]===6&&g[1]===6){m.tiebreak=true;m.sets[m.currentSet].scores=[0,0];}
+  return m;
+}
+function endSet(m,s){
+  m.sets[m.currentSet].winner=s;
+  const won=[0,1].map(i=>m.sets.filter(x=>x.winner===i).length);
+  if((won[s]+1)>=2){m.status='finished';m.winner=s;m.endTime=Date.now();return m;}
+  m.sets.push({scores:[0,0],games:[0,0]});m.currentSet++;return m;
+}
+function dispScore(match,s){
+  if(match.isAmericano)return String(match.americanoScores[s]);
+  const pts=match.sets[match.currentSet].scores;
+  if(match.tiebreak)return String(pts[s]);
+  const [a,b]=[pts[0],pts[1]];
+  const seq=['0','15','30','40'];
+  if(a>=3&&b>=3){if(a===b)return'40';return(a>b?s===0:s===1)?'ADV':'40';}
+  return seq[pts[s]]||'0';
+}
+function isLead(match,s){
+  if(match.isAmericano)return match.americanoScores[s]>match.americanoScores[1-s];
+  const pts=match.sets[match.currentSet].scores;
+  if(match.tiebreak)return pts[s]>pts[1-s];
+  const [a,b]=[pts[0],pts[1]];
+  if(a>=3&&b>=3&&a!==b)return a>b?s===0:s===1;
+  return pts[s]>pts[1-s];
+}
+function initMatch(type,teams,courtId,courtName,compId){
+  const isAmo=type==='americano'||type==='mexicano';
+  return{id:uid(),type,teams,courtId,courtName:courtName||'',compId:compId||null,
+    sets:[{scores:[0,0],games:[0,0]}],currentSet:0,tiebreak:false,
+    americanoScores:[0,0],isAmericano:isAmo,status:'live',winner:null,startTime:Date.now()};
+}
+
+// ═══════════════════════════════════════════════════════
+//  SCHEDULE GENERATORS
+// ═══════════════════════════════════════════════════════
+function genAmericano(players){
+  const rounds=[],n=players.length,used=new Set();
+  if(n<4)return rounds;
+  for(let a=0;a<n;a++)for(let b=a+1;b<n;b++)for(let c=0;c<n;c++)for(let d=c+1;d<n;d++){
+    if([a,b].some(x=>[c,d].includes(x)))continue;
+    const key=[[a,b].sort().join(','),[c,d].sort().join(',')].sort().join('|');
+    if(used.has(key))continue;used.add(key);
+    rounds.push({teamA:[players[a],players[b]],teamB:[players[c],players[d]]});
+  }
+  return rounds;
+}
+function genRR(teams){
+  const p=[];
+  for(let i=0;i<teams.length;i++)for(let j=i+1;j<teams.length;j++)p.push([teams[i],teams[j]]);
+  return p;
+}
+
+// ═══════════════════════════════════════════════════════
+//  LEADERBOARD
+// ═══════════════════════════════════════════════════════
+function calcLB(players,matches,compId){
+  const map={};
+  players.forEach(p=>{map[p.id]={...p,wins:0,losses:0,pts:0,amoPts:0};});
+  matches.filter(m=>m.status==='finished'&&(!compId||m.compId===compId)).forEach(m=>{
+    [0,1].forEach(side=>{
+      m.teams[side].players.forEach(p=>{
+        if(!map[p.id])map[p.id]={...p,wins:0,losses:0,pts:0,amoPts:0};
+        if(m.winner===side){map[p.id].wins++;map[p.id].pts+=3;}else{map[p.id].losses++;}
+        if(m.isAmericano)map[p.id].amoPts+=m.americanoScores[side];
+      });
+    });
+  });
+  return Object.values(map).sort((a,b)=>b.pts-a.pts||b.wins-a.wins);
+}
+
+// ═══════════════════════════════════════════════════════
+//  RENDERING HELPERS
+// ═══════════════════════════════════════════════════════
+function courtById(id){return state.courts.find(c=>c.id===id)||{name:'',color:'#5D7A62'}}
+function playerById(id){return state.players.find(p=>p.id===id)}
+function matchById(id){return state.matches.find(m=>m.id===id)}
+function compById(id){return state.comps.find(c=>c.id===id)}
+
+function renderBadge(cls,html){return`<span class="badge ${cls}">${html}</span>`}
+function renderLiveDot(){return`<span class="live-dot"></span>`}
+
+function renderSetPills(match){
+  if(match.isAmericano){
+    const [a,b]=match.americanoScores;
+    return`<div class="set-pill"><span class="${a>b?'w':''}">${a}</span><span style="color:var(--muted);margin:0 3px">–</span><span class="${b>a?'w':''}">${b}</span></div>`;
+  }
+  return match.sets.map(s=>`<div class="set-pill"><span class="${s.games[0]>s.games[1]?'w':''}">${s.games[0]}</span><span style="color:var(--muted);margin:0 2px">-</span><span class="${s.games[1]>s.games[0]?'w':''}">${s.games[1]}</span></div>`).join('');
+}
+
+function renderMatchCard(match,onclick){
+  const gt=GAME_TYPES[match.type]||{};
+  const court=courtById(match.courtId);
+  const [t0,t1]=match.teams;
+  const w=match.winner;
+  return`<div class="mc ${match.status}" onclick="${onclick}">
+    <div class="mc-head">
+      <div class="mc-meta">
+        ${renderBadge('badge-type',gt.icon+' '+gt.label)}
+        ${court.name?`<span class="badge badge-court" style="background:${court.color}bb">${court.name}</span>`:''}
+      </div>
+      <div class="mc-status">
+        ${match.status==='live'?renderLiveDot()+renderBadge('badge-live','LIVE'):renderBadge('badge-done','Selesai')}
+      </div>
+    </div>
+    <div class="mc-teams">
+      <div class="mc-team">
+        <div class="mc-tname ${w===0?'win':''}">${t0.name}</div>
+        <div class="mc-tplayers">${t0.players.map(p=>p.name).join(' / ')}</div>
+      </div>
+      <div class="mc-vs">VS</div>
+      <div class="mc-team r">
+        <div class="mc-tname ${w===1?'win':''}">${t1.name}</div>
+        <div class="mc-tplayers">${t1.players.map(p=>p.name).join(' / ')}</div>
+      </div>
+    </div>
+    <div class="mc-scores">${renderSetPills(match)}</div>
+  </div>`;
+}
+
+function renderCourtGrid(liveMatches){
+  if(!liveMatches.length)return`<div class="court-empty">Tidak ada pertandingan aktif</div>`;
+  const grouped={};
+  state.courts.forEach(c=>{grouped[c.id]=[];});
+  liveMatches.forEach(m=>{if(!grouped[m.courtId])grouped[m.courtId]=[];grouped[m.courtId].push(m);});
+  const active=state.courts.filter(c=>(grouped[c.id]||[]).length>0);
+  return`<div class="court-grid">${active.map(court=>{
+    const ms=grouped[court.id]||[];
+    return`<div class="court-panel" style="border-top:3px solid ${court.color}">
+      <div class="court-panel-head">
+        <div style="width:8px;height:8px;border-radius:2px;background:${court.color}"></div>
+        <div class="court-panel-name" style="color:${court.color}">${court.name}</div>
+        ${renderBadge('badge-live',renderLiveDot()+ms.length)}
+      </div>
+      <div class="court-panel-body">
+        ${ms.map(m=>{
+          const [t0,t1]=m.teams;
+          return`<div class="cmm" onclick="openMatch('${m.id}')">
+            <div class="cmm-teams">
+              <div class="cmm-team">${t0.name}</div>
+              <div class="cmm-vs">VS</div>
+              <div class="cmm-team r">${t1.name}</div>
+            </div>
+            <div class="cmm-scores">${renderSetPills(m)}</div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+function renderLB(lb){
+  const medals=['🥇','🥈','🥉'];
+  if(!lb.length)return`<div class="empty" style="padding:16px"><div class="empty-txt">Belum ada data</div></div>`;
+  return`<div class="lb-hdr"><span>#</span><span>Pemain</span><span>W</span><span>L</span><span>Pts</span><span>Poin</span></div>`+
+    lb.map((p,i)=>`<div class="lb-row">
+      <div class="lb-rank">${medals[i]||i+1}</div>
+      <div class="lb-name">${p.name}</div>
+      <div class="lb-num" style="color:var(--green)">${p.wins}</div>
+      <div class="lb-num" style="color:var(--red)">${p.losses}</div>
+      <div class="lb-num" style="color:var(--green);font-weight:700">${p.pts}</div>
+      <div class="lb-num" style="color:var(--gold)">${p.amoPts||p.rating||'-'}</div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+//  TAB ROUTING
+// ═══════════════════════════════════════════════════════
+function showTab(tab){
+  ['home','courts','match','scoreboard','compete','players'].forEach(t=>{
+    document.getElementById('page-'+t).classList.toggle('hidden',t!==tab);
+    const btn=document.getElementById('tab-'+t);
+    if(btn)btn.classList.toggle('active',t===tab);
+  });
+  // also handle match tab = scoreboard case
+  if(tab==='scoreboard'){document.getElementById('tab-match').classList.add('active');}
+  state.currentTab=tab;
+  render();
+}
+
+function render(){
+  switch(state.currentTab){
+    case 'home':       renderHome();      break;
+    case 'courts':     renderCourts();    break;
+    case 'match':      renderMatch();     break;
+    case 'scoreboard': renderScoreboard();break;
+    case 'compete':    renderCompete();   break;
+    case 'players':    renderPlayers();   break;
+  }
+  // update home live badge
+  const liveCount=state.matches.filter(m=>m.status==='live').length;
+  const homeTab=document.getElementById('tab-home');
+  if(homeTab)homeTab.textContent='Home'+(liveCount?' 🟢':'');
+}
+
+// ═══════════════════════════════════════════════════════
+//  HOME PAGE
+// ═══════════════════════════════════════════════════════
+function renderHome(){
+  const live=state.matches.filter(m=>m.status==='live');
+  const done=state.matches.filter(m=>m.status==='finished');
+  const liveComps=state.comps.filter(c=>state.matches.some(m=>m.compId===c.id&&m.status==='live'));
+  document.getElementById('page-home').innerHTML=`
+    <div class="hero">
+      <div class="hero-badge">🎾 Platform Padel Profesional</div>
+      <div class="hero-title">YO<span>PADEL</span></div>
+      <div class="hero-sub">Manajemen Pertandingan & Kompetisi Padel</div>
+      <div class="hero-stats">
+        <div class="hs"><div class="hs-val">${state.players.length}</div><div class="hs-lbl">Pemain</div></div>
+        <div class="hs"><div class="hs-val">${state.courts.length}</div><div class="hs-lbl">Lapangan</div></div>
+        <div class="hs"><div class="hs-val" style="color:${live.length?'var(--green)':'var(--text)'}">${live.length}</div><div class="hs-lbl">Live</div></div>
+        <div class="hs"><div class="hs-val">${state.matches.length}</div><div class="hs-lbl">Match</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">QUICK ACTION</div>
+      <div class="g2" style="gap:8px">
+        <button class="btn btn-primary btn-lg btn-block" onclick="showTab('match');state.matchView='manual';render()">🎾 Buat Match</button>
+        <button class="btn btn-orange btn-lg btn-block" onclick="showTab('compete')">🏆 Kompetisi</button>
+      </div>
+      <div class="g2" style="gap:8px;margin-top:8px">
+        <button class="btn btn-ghost btn-block" onclick="showTab('courts')">🏟 Kelola Lapangan</button>
+        <button class="btn btn-ghost btn-block" onclick="showTab('players')">👥 Kelola Pemain</button>
+      </div>
+    </div>
+    ${live.length?`<div class="card"><div class="card-title">${renderLiveDot()} SEDANG BERLANGSUNG <span class="sync-indicator" style="margin-left:auto"><span class="sync-dot"></span>SYNC</span></div>${renderCourtGrid(live)}</div>`:''}
+    ${liveComps.length?`<div class="card"><div class="card-title">🏆 KOMPETISI AKTIF</div>${liveComps.map(c=>{
+      const cm=state.matches.filter(m=>m.compId===c.id);
+      const lm=cm.filter(m=>m.status==='live');
+      return`<div class="cc" onclick="openComp('${c.id}')">
+
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div><div class="cc-name">${c.name}</div><div class="cc-meta"><span>${GAME_TYPES[c.type]?.label}</span><span>·</span><span>${(c.courts||[]).length} lapangan</span><span>·</span><span>${cm.length} match</span></div></div>
+          ${renderBadge('badge-live',renderLiveDot()+'LIVE')}
+        </div></div>`;}).join('')}</div>`:''}
+    ${done.length?`<div class="card"><div class="card-title">HASIL TERAKHIR</div>${[...done].reverse().slice(0,3).map(m=>renderMatchCard(m,`openMatch('${m.id}')`)).join('')}</div>`:''}
+    ${!state.matches.length?`<div class="empty"><div class="empty-icon">🎾</div><div class="empty-txt">Belum ada pertandingan. Mulai sekarang!</div></div>`:''}
+    ${state.matches.length?`<div class="reset-box"><div class="reset-title">⚠️ Reset Semua Match</div><div class="reset-desc">Hapus seluruh riwayat pertandingan.</div>
+      ${!state.confirmReset?`<button class="btn btn-danger btn-sm" onclick="state.confirmReset=true;render()">🗑 Reset</button>`
+        :`<div style="display:flex;gap:6px"><button class="btn btn-danger btn-sm" onclick="doResetAll()">Ya, Hapus</button><button class="btn btn-secondary btn-sm" onclick="state.confirmReset=false;render()">Batal</button></div>`}
+    </div>`:''}`;
+}
+
+// ═══════════════════════════════════════════════════════
+//  COURTS PAGE
+// ═══════════════════════════════════════════════════════
+function renderCourts(){
+  const liveM=state.matches.filter(m=>m.status==='live');
+  document.getElementById('page-courts').innerHTML=`
+    <div class="sh"><div class="sh-title">LAPANGAN (${state.courts.length})</div>
+      <button class="btn btn-primary" onclick="showAddCourt()">+ Tambah</button>
+    </div>
+    <div id="add-court-form" class="card hidden">
+      <div class="card-title">TAMBAH LAPANGAN</div>
+      <div class="fg"><label class="flbl">Nama Lapangan</label><input class="finput" id="new-court-name" placeholder="Lapangan 5" onkeydown="if(event.key==='Enter')saveCourt()"/></div>
+      <div class="g2"><button class="btn btn-primary" onclick="saveCourt()">Simpan</button><button class="btn btn-secondary" onclick="hideAddCourt()">Batal</button></div>
+    </div>
+    ${state.courts.map(c=>{
+      const cm=state.matches.filter(m=>m.courtId===c.id);
+      const lh=cm.filter(m=>m.status==='live');
+      return`<div class="card" style="border-left:3px solid ${c.color}">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <div style="display:flex;align-items:center;gap:8px">
+            <div style="width:12px;height:12px;border-radius:3px;background:${c.color}"></div>
+            <input class="finput" value="${c.name}" style="border:none;background:transparent;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--text);padding:0;width:auto" onchange="renameCourt('${c.id}',this.value)"/>
+            ${lh.length?renderBadge('badge-live',renderLiveDot()+lh.length+' LIVE'):''}
+          </div>
+          <button class="btn btn-danger btn-xs" onclick="deleteCourt('${c.id}')">✕</button>
+        </div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:8px">${cm.length} total match · ${lh.length} berlangsung</div>
+        ${lh.map(m=>renderMatchCard(m,`openMatch('${m.id}')`)).join('')}
+        ${!cm.length?`<div style="font-size:12px;color:var(--muted);font-style:italic">Belum ada pertandingan di lapangan ini</div>`:''}
+      </div>`;}).join('')}
+    ${!state.courts.length?`<div class="empty"><div class="empty-icon">🏟</div><div class="empty-txt">Belum ada lapangan</div></div>`:''}`;
+}
+function showAddCourt(){document.getElementById('add-court-form').classList.remove('hidden');document.getElementById('new-court-name').focus();}
+function hideAddCourt(){document.getElementById('add-court-form').classList.add('hidden');}
+function saveCourt(){
+  const name=document.getElementById('new-court-name').value.trim();
+  if(!name)return;
+  const color=COURT_COLORS[state.courts.length%COURT_COLORS.length];
+  state.courts.push({id:uid(),name,color});
+  hideAddCourt();render();
+}
+function renameCourt(id,name){const c=state.courts.find(x=>x.id===id);if(c)c.name=name;}
+function deleteCourt(id){
+  if(state.matches.some(m=>m.courtId===id&&m.status==='live')){alert('Lapangan sedang digunakan!');return;}
+  state.courts=state.courts.filter(c=>c.id!==id);render();
+}
+
+// ═══════════════════════════════════════════════════════
+//  MATCH PAGE
+// ═══════════════════════════════════════════════════════
+function renderMatch(){
+  if(state.matchView==='list')     renderMatchList();
+  else if(state.matchView==='manual')renderMatchManual();
+  else if(state.matchView==='auto') renderMatchAuto();
+}
+
+function renderMatchList(){
+  const ms=[...state.matches].reverse();
+  document.getElementById('page-match').innerHTML=`
+    <div class="sh"><div class="sh-title">PERTANDINGAN</div>
+      <div class="sh-actions">
+        <button class="btn btn-secondary btn-sm" onclick="state.matchView='auto';state.autoSchedule=[];render()">⚡ Auto</button>
+        <button class="btn btn-primary" onclick="state.matchView='manual';render()">+ Manual</button>
+      </div>
+    </div>
+    ${!ms.length?`<div class="empty"><div class="empty-icon">🎾</div><div class="empty-txt">Belum ada pertandingan</div></div>`:''}
+    ${ms.map(m=>renderMatchCard(m,`openMatch('${m.id}')`)).join('')}
+    ${state.matches.length?`<div class="reset-box"><div class="reset-title">⚠️ Reset Semua Match</div><div class="reset-desc">Hapus seluruh riwayat pertandingan.</div>
+      ${!state.confirmResetMatch?`<button class="btn btn-danger btn-sm" onclick="state.confirmResetMatch=true;render()">🗑 Reset</button>`
+        :`<div style="display:flex;gap:6px"><button class="btn btn-danger btn-sm" onclick="doResetAll();state.matchView='list'">Ya</button><button class="btn btn-secondary btn-sm" onclick="state.confirmResetMatch=false;render()">Batal</button></div>`}
+    </div>`:''}`;
+}
+
+function gtCards(sel,onclickFn){
+  return Object.entries(GAME_TYPES).map(([k,g])=>
+    `<div class="gt-card ${sel===k?'sel':''}" onclick="${onclickFn}('${k}')">
+      <div class="gt-icon">${g.icon}</div><div class="gt-name">${g.label}</div><div class="gt-desc">${g.desc}</div>
+    </div>`).join('');
+}
+
+function renderMatchManual(){
+  const type=state.manualType;
+  const isAmo=type==='americano'||type==='mexicano';
+  const perTeam=GAME_TYPES[type]?.perTeam||2;
+  const usedA=state.manualTeamA.players.map(p=>p.id);
+  const usedB=state.manualTeamB.players.map(p=>p.id);
+  const usedAll=[...usedA,...usedB];
+  const canStart=state.manualTeamA.players.length===perTeam&&state.manualTeamB.players.length===perTeam&&state.manualCourt;
+
+  function playerRow(p, inA, inB, prefix){
+    const sel=inA?'selA':inB?'selB':'';
+    const locked=usedAll.includes(p.id)&&!inA&&!inB;
+    return`<div class="pi ${sel} ${locked?'locked':''}" onclick="manualTogglePlayer('${p.id}','${prefix}')">
+      <div class="pi-av">${p.name[0]}</div>
+      <div class="pi-name">${p.name}</div>
+      <div class="pi-rating">⭐ ${p.rating}</div>
+      ${sel?`<span style="color:${sel==='selA'?'var(--green)':'var(--orange)'}">✓</span>`:''}
+    </div>`;
+  }
+
+  document.getElementById('page-match').innerHTML=`
+    <div class="sh"><div class="sh-title">BUAT MANUAL</div>
+      <div class="sh-actions">
+        <button class="btn btn-warn btn-sm" onclick="resetManual()">🔄 Reset</button>
+        <button class="btn btn-secondary" onclick="state.matchView='list';render()">← Kembali</button>
+      </div>
+    </div>
+    <div class="card"><div class="card-title">TIPE PERMAINAN</div>
+      <div class="g3">${gtCards(type,'setManualType')}</div>
+      ${isAmo?`<div class="info-box" style="margin-top:10px">🌀 Target <b>${AMERICANO_TARGET}</b> poin. Pertama capai ${AMERICANO_TARGET} menang!</div>`:''}
+    </div>
+    <div class="card">
+      <div class="card-title">PILIH LAPANGAN</div>
+      <div style="display:flex;flex-wrap:wrap;margin-bottom:12px">
+        ${state.courts.map(c=>`<div class="court-chip ${state.manualCourt===c.id?'sel':''}" style="${state.manualCourt===c.id?`border-color:${c.color};background:${c.color}20`:''}" onclick="state.manualCourt='${c.id}';render()">
+          <div style="width:8px;height:8px;border-radius:2px;background:${c.color}"></div>${c.name}
+        </div>`).join('')}
+      </div>
+      <div class="fg"><label class="flbl">Kompetisi (opsional)</label>
+        <select class="finput" onchange="state.manualCompId=this.value">
+          <option value="">— Tanpa Kompetisi —</option>
+          ${state.comps.map(c=>`<option value="${c.id}" ${state.manualCompId===c.id?'selected':''}>${c.name}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="card" style="margin-bottom:0">
+        <div class="card-title" style="color:var(--green)">TIM A</div>
+        <div class="fg"><label class="flbl">Nama Tim</label><input class="finput" value="${state.manualTeamA.name}" oninput="state.manualTeamA.name=this.value"/></div>
+        <div class="flbl" style="margin-bottom:7px">Pemain (${usedA.length}/${perTeam})</div>
+        ${state.players.map(p=>playerRow(p,usedA.includes(p.id),usedB.includes(p.id),'A')).join('')}
+      </div>
+      <div class="card" style="margin-bottom:0">
+        <div class="card-title" style="color:var(--orange)">TIM B</div>
+        <div class="fg"><label class="flbl">Nama Tim</label><input class="finput" value="${state.manualTeamB.name}" oninput="state.manualTeamB.name=this.value"/></div>
+        <div class="flbl" style="margin-bottom:7px">Pemain (${usedB.length}/${perTeam})</div>
+        ${state.players.map(p=>playerRow(p,usedA.includes(p.id),usedB.includes(p.id),'B')).join('')}
+      </div>
+    </div>
+    <button class="btn btn-primary btn-lg btn-block" style="margin-top:10px" ${canStart?'':'disabled'} onclick="startManualMatch()">🎾 Mulai Pertandingan</button>`;
+}
+
+function renderMatchAuto(){
+  const type=state.autoType;
+  const isAmo=type==='americano'||type==='mexicano';
+  const perTeam=GAME_TYPES[type]?.perTeam||2;
+  const minPl=isAmo?4:perTeam*2;
+  const validCount=state.autoPlayers.length>=minPl&&(isAmo||state.autoPlayers.length%(perTeam*2)===0);
+  const validCourts=state.autoCourts.length>0;
+  const sched=state.autoSchedule;
+
+  document.getElementById('page-match').innerHTML=`
+    <div class="sh"><div class="sh-title">AUTO CREATE</div>
+      <div class="sh-actions">
+        <button class="btn btn-warn btn-sm" onclick="resetAuto()">🔄 Reset</button>
+        <button class="btn btn-secondary" onclick="state.matchView='list';render()">← Kembali</button>
+      </div>
+    </div>
+    <div class="card"><div class="card-title">TIPE</div>
+      <div class="g3">${gtCards(type,'setAutoType')}</div>
+      ${isAmo?`<div class="info-box" style="margin-top:10px">🌀 Race to <b>${AMERICANO_TARGET}</b> poin. Sistem rotate pasangan otomatis.</div>`:''}
+    </div>
+    <div class="card"><div class="card-title">PILIH LAPANGAN (multi)</div>
+      <div class="info-box">Match dibagi merata ke lapangan yang dipilih secara otomatis.</div>
+      <div style="display:flex;flex-wrap:wrap">
+        ${state.courts.map(c=>{const sel=state.autoCourts.includes(c.id);return`<div class="court-chip ${sel?'sel':''}" style="${sel?`border-color:${c.color};background:${c.color}20`:''}" onclick="toggleAutoCourt('${c.id}')">
+          <div style="width:8px;height:8px;border-radius:2px;background:${c.color}"></div>${c.name}${sel?`<span style="color:${c.color}">✓</span>`:''}
+        </div>`;}).join('')}
+      </div>
+      ${!validCourts?`<div class="warn-box" style="margin-top:8px">⚠️ Pilih minimal 1 lapangan.</div>`:''}
+    </div>
+    <div class="card"><div class="card-title">KOMPETISI (opsional)</div>
+      <select class="finput" onchange="state.autoCompId=this.value">
+        <option value="">— Tanpa Kompetisi —</option>
+        ${state.comps.map(c=>`<option value="${c.id}" ${state.autoCompId===c.id?'selected':''}>${c.name}</option>`).join('')}
+      </select>
+    </div>
+    <div class="card"><div class="card-title">PESERTA (${state.autoPlayers.length} dipilih)</div>
+      ${!isAmo?`<div class="info-box">Pilih kelipatan ${perTeam*2} pemain. Tim akan dibentuk otomatis.</div>`:''}
+      <div style="display:flex;justify-content:space-between;margin-bottom:9px">
+        <span style="font-size:11px;color:var(--muted)">Min ${minPl} pemain</span>
+        ${state.autoPlayers.length?`<button class="btn btn-ghost btn-xs" onclick="state.autoPlayers=[];state.autoSchedule=[];render()">Hapus Pilihan</button>`:''}
+      </div>
+      ${state.players.map(p=>{
+        const sel=state.autoPlayers.find(x=>x.id===p.id);
+        return`<div class="pi ${sel?'selG':''}" onclick="toggleAutoPlayer('${p.id}')">
+          <div class="pi-av">${p.name[0]}</div>
+          <div class="pi-name">${p.name}</div>
+          <div class="pi-rating">⭐ ${p.rating}</div>
+          ${sel?`<span style="color:var(--green)">✓</span>`:''}
+        </div>`;}).join('')}
+      ${!isAmo&&state.autoPlayers.length>0&&state.autoPlayers.length%(perTeam*2)!==0?
+        `<div class="warn-box">⚠️ Tambah ${perTeam*2-(state.autoPlayers.length%(perTeam*2))} pemain lagi untuk genap.</div>`:''}
+      <button class="btn btn-primary btn-block" style="margin-top:10px" ${validCount&&validCourts?'':'disabled'} onclick="generateAutoSchedule()">
+        📋 Generate Jadwal
+      </button>
+    </div>
+    ${sched.length?`<div class="card"><div class="card-title">JADWAL — ${sched.length} RONDE · ${state.autoCourts.length} LAPANGAN</div>
+      <div class="info-box">${sched.length} match dibagi ke ${state.autoCourts.length} lapangan. ~${Math.ceil(sched.length/state.autoCourts.length)} ronde per lapangan.</div>
+      ${sched.map((r,i)=>`<div class="round-card">
+        <div class="round-num">RONDE ${i+1}</div>
+        <div class="round-match">
+          <div>${(isAmo?r.teamA:r.teamA).map(p=>p.name).join(' & ')}</div>
+          <div style="font-size:10px;color:var(--muted)">VS</div>
+          <div style="text-align:right">${(isAmo?r.teamB:r.teamB).map(p=>p.name).join(' & ')}</div>
+        </div>
+        ${r.courtName?`<div class="round-court" style="color:${r.courtColor}">📍 ${r.courtName}</div>`:''}
+      </div>`).join('')}
+      <button class="btn btn-primary btn-lg btn-block" style="margin-top:10px" onclick="launchBatch()">
+        🚀 Mulai Semua (${sched.length} Match di ${state.autoCourts.length} Lapangan)
+      </button>
+      <button class="btn btn-ghost btn-block" style="margin-top:8px" onclick="state.autoSchedule=[];render()">🔄 Generate Ulang</button>
+    </div>`:''}`;
+}
+
+// ═══════════════════════════════════════════════════════
+//  MATCH ACTIONS
+// ═══════════════════════════════════════════════════════
+function setManualType(t){state.manualType=t;state.manualTeamA={name:'Tim A',players:[]};state.manualTeamB={name:'Tim B',players:[]};render();}
+function setAutoType(t){state.autoType=t;state.autoPlayers=[];state.autoSchedule=[];render();}
+function resetManual(){state.manualType='doubles';state.manualTeamA={name:'Tim A',players:[]};state.manualTeamB={name:'Tim B',players:[]};state.manualCourt=state.courts[0]?.id||'';state.manualCompId='';render();}
+function resetAuto(){state.autoType='americano';state.autoPlayers=[];state.autoCourts=[state.courts[0]?.id].filter(Boolean);state.autoCompId='';state.autoSchedule=[];render();}
+
+function manualTogglePlayer(pid,prefix){
+  const player=state.players.find(p=>p.id===pid);
+  if(!player)return;
+  const perTeam=GAME_TYPES[state.manualType]?.perTeam||2;
+  const team=prefix==='A'?state.manualTeamA:state.manualTeamB;
+  const other=prefix==='A'?state.manualTeamB:state.manualTeamA;
+  if(other.players.find(p=>p.id===pid))return;
+  if(team.players.find(p=>p.id===pid)){team.players=team.players.filter(p=>p.id!==pid);}
+  else{if(team.players.length>=perTeam)return;team.players=[...team.players,player];}
+  render();
+}
+
+function startManualMatch(){
+  const c=state.courts.find(x=>x.id===state.manualCourt);
+  const match=initMatch(state.manualType,[{name:state.manualTeamA.name,players:[...state.manualTeamA.players]},{name:state.manualTeamB.name,players:[...state.manualTeamB.players]}],state.manualCourt,c?.name||'',state.manualCompId||null);
+  state.matches.push(match);
+  state.liveMatchId=match.id;
+  resetManual();
+  state.matchView='list';
+  showTab('scoreboard');
+}
+
+function toggleAutoCourt(id){if(state.autoCourts.includes(id))state.autoCourts=state.autoCourts.filter(x=>x!==id);else state.autoCourts=[...state.autoCourts,id];state.autoSchedule=[];render();}
+function toggleAutoPlayer(pid){
+  const p=state.players.find(x=>x.id===pid);
+  if(!p)return;
+  if(state.autoPlayers.find(x=>x.id===pid))state.autoPlayers=state.autoPlayers.filter(x=>x.id!==pid);
+  else state.autoPlayers=[...state.autoPlayers,p];
+  state.autoSchedule=[];render();
+}
+
+function generateAutoSchedule(){
+  const type=state.autoType;
+  const isAmo=type==='americano'||type==='mexicano';
+  const perTeam=GAME_TYPES[type]?.perTeam||2;
+  let rounds=[];
+  if(isAmo){rounds=genAmericano(state.autoPlayers);}
+  else{
+    const teams=[];
+    for(let i=0;i<state.autoPlayers.length;i+=perTeam){
+      const g=state.autoPlayers.slice(i,i+perTeam);
+      if(g.length===perTeam)teams.push({name:`Tim ${teams.length+1}`,players:g});
+    }
+    rounds=genRR(teams).map(([a,b])=>({teamA:a.players,teamB:b.players,nameA:a.name,nameB:b.name}));
+  }
+  const activeCourts=state.courts.filter(c=>state.autoCourts.includes(c.id));
+  state.autoSchedule=rounds.map((r,i)=>{
+    const c=activeCourts[i%activeCourts.length];
+    return{...r,courtId:c?.id,courtName:c?.name||'',courtColor:c?.color};
+  });
+  render();
+}
+
+function launchBatch(){
+  const type=state.autoType;
+  const isAmo=type==='americano'||type==='mexicano';
+  const list=state.autoSchedule.map((r,i)=>{
+    const tA=isAmo?{name:`Tim ${i*2+1}`,players:r.teamA}:{name:r.nameA||`Tim ${i*2+1}`,players:r.teamA};
+    const tB=isAmo?{name:`Tim ${i*2+2}`,players:r.teamB}:{name:r.nameB||`Tim ${i*2+2}`,players:r.teamB};
+    return initMatch(type,[tA,tB],r.courtId,r.courtName,state.autoCompId||null);
+  });
+  state.matches.push(...list);
+  if(list.length>0){state.liveMatchId=list[0].id;}
+  resetAuto();state.matchView='list';
+  if(list.length>0)showTab('scoreboard');else showTab('match');
+}
+
+function openMatch(id){
+  const m=state.matches.find(x=>x.id===id);
+  if(!m)return;
+  state.liveMatchId=id;
+  showTab('scoreboard');
+}
+
+// ═══════════════════════════════════════════════════════
+//  SCOREBOARD
+// ═══════════════════════════════════════════════════════
+function renderScoreboard(){
+  const match=state.matches.find(m=>m.id===state.liveMatchId);
+  if(!match){showTab('match');return;}
+  const {teams,sets,currentSet,tiebreak,americanoScores,isAmericano,status,type,courtId}=match;
+  const set=sets[currentSet];
+  const court=courtById(courtId);
+  const pcts=americanoScores.map(v=>Math.min(100,(v/AMERICANO_TARGET)*100));
+
+  document.getElementById('page-scoreboard').innerHTML=`
+    <div class="sb">
+      <div class="sb-head">
+        <button class="sb-back" onclick="showTab('match')">←</button>
+        <div class="sb-htitle">LIVE SCORE</div>
+        ${status==='live'?renderBadge('badge-live',renderLiveDot()+'LIVE'):''}
+        ${court.name?`<div class="sb-court-tag" style="background:${court.color}cc;margin-left:auto">${court.name}</div>`:''}
+      </div>
+      <div class="sb-teams">
+        <div class="sbt"><div class="sbt-name">${teams[0].name}</div><div class="sbt-players">${teams[0].players.map(p=>p.name).join(' & ')}</div></div>
+        <div class="sbt-vs">VS</div>
+        <div class="sbt"><div class="sbt-name">${teams[1].name}</div><div class="sbt-players">${teams[1].players.map(p=>p.name).join(' & ')}</div></div>
+      </div>
+      ${isAmericano?`
+        <div class="note note-amo">🎯 Race to ${AMERICANO_TARGET} — Pertama capai ${AMERICANO_TARGET} poin menang!</div>
+        <div class="amo-wrap"><div class="amo-grid">
+          ${[0,1].map(i=>`<div class="amo-side" style="border:1px solid ${i===0?'var(--green)':'var(--orange)'}40">
+            <div class="amo-lbl">${teams[i].name}</div>
+            <div class="amo-score" style="color:${i===0?'var(--green)':'var(--orange)'}">${americanoScores[i]}</div>
+            <div class="amo-prog">${AMERICANO_TARGET-americanoScores[i]} poin lagi</div>
+            <div class="amo-track"><div class="amo-fill" style="width:${pcts[i]}%;background:${i===0?'var(--green)':'var(--orange)'}"></div></div>
+          </div>`).join('')}
+        </div></div>`:`
+        <div class="sb-sets">
+          ${sets.map((s,i)=>`<div class="sb-set ${i===currentSet?'cur':''}">
+            <div class="sb-set-lbl">Set ${i+1}</div>
+            <div class="sb-set-sc"><span class="${s.games[0]>s.games[1]?'w':''}">${s.games[0]}</span><span style="color:var(--muted);margin:0 3px">-</span><span class="${s.games[1]>s.games[0]?'w':''}">${s.games[1]}</span></div>
+          </div>`).join('')}
+        </div>
+        ${tiebreak?`<div class="note note-tb">🎯 TIEBREAK — First to 7 (win by 2)</div>`:''}
+        <div class="sb-game">
+          <div><div class="gpts ${isLead(match,0)?'lead':''}">${dispScore(match,0)}</div><div class="gpts-lbl">Game Score</div></div>
+          <div class="g-sep">:</div>
+          <div><div class="gpts ${isLead(match,1)?'lead':''}">${dispScore(match,1)}</div><div class="gpts-lbl">Game Score</div></div>
+        </div>
+        <div class="sb-games-row">
+          <span>Games Set ${currentSet+1}: <b style="color:var(--text)">${set.games[0]}</b></span>
+          <span><b style="color:var(--text)">${set.games[1]}</b> :Games</span>
+        </div>`}
+      ${status==='live'?`<div class="sb-btns">
+        <button class="sc-btn sc-btn-a" onclick="scorePoint(0)"><span class="sc-btn-tm">${teams[0].name}</span>+ POIN</button>
+        <button class="sc-btn sc-btn-b" onclick="scorePoint(1)"><span class="sc-btn-tm">${teams[1].name}</span>+ POIN</button>
+      </div>`:`<div style="padding:16px;text-align:center;color:var(--muted);font-size:13px">Selesai 🏆 · Pemenang: <b style="color:var(--gold)">${match.teams[match.winner]?.name}</b></div>`}
+    </div>`;
+}
+
+function scorePoint(side){
+  const idx=state.matches.findIndex(m=>m.id===state.liveMatchId);
+  if(idx<0)return;
+  const updated=advancePoint(state.matches[idx],side);
+  state.matches[idx]=updated;
+  if(updated.status==='finished')showWinner(updated);
+  renderScoreboard();
+}
+
+function showWinner(match){
+  const w=match.teams[match.winner];
+  const court=courtById(match.courtId);
+  document.getElementById('win-name').textContent=w.name;
+  document.getElementById('win-sub').textContent=w.players.map(p=>p.name).join(' & ');
+  document.getElementById('win-court-badge').innerHTML=court.name?`<span class="badge badge-court" style="background:${court.color}cc;margin-bottom:8px">${court.name}</span>`:'' ;
+  if(match.isAmericano){
+    document.getElementById('win-score').innerHTML=`<div style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:var(--green)">${match.americanoScores[match.winner]}<span style="color:var(--muted);font-size:13px"> / ${AMERICANO_TARGET}</span></div>`;
+  }else{
+    document.getElementById('win-score').innerHTML=`<div style="display:flex;gap:5px;justify-content:center">${match.sets.map(s=>`<div style="background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:4px 9px;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700">${s.games[0]}<span style="color:var(--muted);margin:0 2px">-</span>${s.games[1]}</div>`).join('')}</div>`;
+  }
+  document.getElementById('winner-overlay').classList.remove('hidden');
+}
+function closeWinner(){document.getElementById('winner-overlay').classList.add('hidden');showTab('match');}
+
+// ═══════════════════════════════════════════════════════
+//  COMPETE PAGE
+// ═══════════════════════════════════════════════════════
+function renderCompete(){
+  if(state.compView==='create')renderCompCreate();
+  else if(state.compView==='detail')renderCompDetail();
+  else renderCompList();
+}
+
+function renderCompList(){
+  document.getElementById('page-compete').innerHTML=`
+    <div class="sh"><div class="sh-title">KOMPETISI</div><button class="btn btn-primary" onclick="state.compView='create';render()">+ Buat Baru</button></div>
+    ${!state.comps.length?`<div class="empty"><div class="empty-icon">🏆</div><div class="empty-txt">Belum ada kompetisi</div></div>`:''}
+    ${state.comps.map(c=>{
+      const cm=state.matches.filter(m=>m.compId===c.id);
+      const lm=cm.filter(m=>m.status==='live');
+      const dm=cm.filter(m=>m.status==='finished');
+      const compCourts=state.courts.filter(ct=>(c.courts||[]).includes(ct.id));
+      return`<div class="cc" onclick="openComp('${c.id}')">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div style="flex:1;min-width:0">
+            <div class="cc-name">${c.name}</div>
+            <div class="cc-meta">
+              <span>${GAME_TYPES[c.type]?.icon} ${GAME_TYPES[c.type]?.label}</span>
+              <span>·</span><span>${c.format==='round_robin'?'Round Robin':c.format==='elimination'?'Eliminasi':'Grup+Eliminasi'}</span>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:7px">${compCourts.map(ct=>`<span class="badge badge-court" style="background:${ct.color}bb">${ct.name}</span>`).join('')}</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px">
+            ${lm.length?renderBadge('badge-live',renderLiveDot()+lm.length+' LIVE'):renderBadge('badge-upcoming','Upcoming')}
+            ${lm.length?`<span class="sync-indicator"><span class="sync-dot"></span>SYNC</span>`:''}
+          </div>
+        </div>
+        <div class="cc-stats">
+          <div class="cc-stat"><div class="cc-stat-val">${cm.length}</div><div class="cc-stat-lbl">Match</div></div>
+          <div class="cc-stat"><div class="cc-stat-val" style="color:var(--green-lt)">${lm.length}</div><div class="cc-stat-lbl">Live</div></div>
+          <div class="cc-stat"><div class="cc-stat-val" style="color:var(--muted)">${dm.length}</div><div class="cc-stat-lbl">Selesai</div></div>
+          <div class="cc-stat"><div class="cc-stat-val" style="color:var(--gold)">${c.maxTeams}</div><div class="cc-stat-lbl">Maks Tim</div></div>
+        </div>
+      </div>`;}).join('')}
+    <div class="card" style="margin-top:4px">
+      <div class="card-title">🏅 LEADERBOARD GLOBAL</div>
+      ${renderLB(calcLB(state.players,state.matches,null))}
+    </div>`;
+}
+
+function renderCompCreate(){
+  document.getElementById('page-compete').innerHTML=`
+    <div class="sh"><div class="sh-title">BUAT KOMPETISI</div><button class="btn btn-secondary" onclick="state.compView='list';render()">← Kembali</button></div>
+    <div class="card">
+      <div class="fg"><label class="flbl">Nama Kompetisi</label><input class="finput" id="comp-name" placeholder="Yopadel Open 2025"/></div>
+      <div class="fg"><label class="flbl">Tipe Permainan</label>
+        <select class="finput" id="comp-type">
+          ${Object.entries(GAME_TYPES).map(([k,v])=>`<option value="${k}">${v.icon} ${v.label}</option>`).join('')}
+        </select>
+      </div>
+      <div class="fg"><label class="flbl">Format</label>
+        <select class="finput" id="comp-format">
+          <option value="round_robin">Round Robin</option>
+          <option value="elimination">Eliminasi</option>
+          <option value="group_stage">Grup + Eliminasi</option>
+        </select>
+      </div>
+      <div class="fg"><label class="flbl">Lapangan yang digunakan</label>
+        <div style="display:flex;flex-wrap:wrap;margin-top:4px" id="comp-courts-sel">
+          ${state.courts.map(c=>`<div class="court-chip" id="ccsel-${c.id}" onclick="toggleCompCourt('${c.id}')" data-selected="0" style="">
+            <div style="width:8px;height:8px;border-radius:2px;background:${c.color}"></div>${c.name}
+          </div>`).join('')}
+        </div>
+      </div>
+      <div class="fg"><label class="flbl">Maksimum Tim</label>
+        <select class="finput" id="comp-maxteams">
+          ${[4,8,16,32].map(n=>`<option value="${n}">${n} Tim</option>`).join('')}
+        </select>
+      </div>
+      <button class="btn btn-primary btn-lg btn-block" onclick="saveComp()">🏆 Buat Kompetisi</button>
+    </div>`;
+  window._compSelCourts=[];
+}
+
+function toggleCompCourt(id){
+  if(!window._compSelCourts)window._compSelCourts=[];
+  const idx=window._compSelCourts.indexOf(id);
+  if(idx>=0)window._compSelCourts.splice(idx,1);else window._compSelCourts.push(id);
+  const c=state.courts.find(x=>x.id===id);
+  const el=document.getElementById('ccsel-'+id);
+  if(el){
+    const sel=window._compSelCourts.includes(id);
+    el.style.borderColor=sel?c.color:'var(--border)';
+    el.style.background=sel?c.color+'20':'var(--surface)';
+  }
+}
+function saveComp(){
+  const name=document.getElementById('comp-name')?.value.trim();
+  if(!name){alert('Masukkan nama kompetisi!');return;}
+  const comp={
+    id:uid(),name,
+    type:document.getElementById('comp-type').value,
+    format:document.getElementById('comp-format').value,
+    maxTeams:parseInt(document.getElementById('comp-maxteams').value),
+    courts:window._compSelCourts||[],
+    players:state.players,
+    status:'upcoming',createdAt:Date.now()
+  };
+  state.comps.push(comp);
+  state.compView='list';render();
+}
+
+function openComp(id){state.viewCompId=id;state.compView='detail';state.compDetailTab='matches';showTab('compete');}
+function renderCompDetail(){
+  const comp=state.comps.find(c=>c.id===state.viewCompId);
+  if(!comp){state.compView='list';render();return;}
+  const cm=state.matches.filter(m=>m.compId===comp.id);
+  const lm=cm.filter(m=>m.status==='live');
+  const dm=cm.filter(m=>m.status==='finished');
+  const compCourts=state.courts.filter(c=>(comp.courts||[]).includes(c.id));
+  const lb=calcLB(comp.players||state.players,state.matches,comp.id);
+  const t=state.compDetailTab;
+
+  let bodyHtml='';
+  if(t==='matches'){
+    bodyHtml=(lm.length?`<div style="font-size:11px;color:var(--green);font-weight:700;margin-bottom:7px;text-transform:uppercase;letter-spacing:1px">🔴 Live (${lm.length})</div>${lm.map(m=>renderMatchCard(m,`openMatch('${m.id}')`)).join('')}`:'')+
+    (dm.length?`<div style="font-size:11px;color:var(--muted);font-weight:700;margin:10px 0 7px;text-transform:uppercase;letter-spacing:1px">Selesai (${dm.length})</div>${[...dm].reverse().map(m=>renderMatchCard(m,`openMatch('${m.id}')`)).join('')}`:'')+
+    (!cm.length?`<div class="empty"><div class="empty-icon">🎾</div><div class="empty-txt">Belum ada match</div></div>`:'');
+  }else if(t==='lb'){
+    bodyHtml=`<div style="font-size:11px;color:var(--muted);margin-bottom:10px">Update otomatis dari ${dm.length} match selesai.</div>${renderLB(lb)}`;
+  }else{
+    bodyHtml=`<div style="font-size:11px;margin-bottom:10px;display:flex;align-items:center;gap:6px"><span class="sync-indicator"><span class="sync-dot"></span>Real-time tersinkronisasi</span></div>`+
+      (lm.length?renderCourtGrid(lm):`<div class="empty"><div class="empty-icon">🏟</div><div class="empty-txt">Tidak ada match live saat ini</div></div>`);
+  }
+
+  document.getElementById('page-compete').innerHTML=`
+    <div class="sh">
+      <div class="sh-title" style="font-size:16px">${comp.name}</div>
+      <div class="sh-actions">
+        <span class="sync-indicator"><span class="sync-dot"></span>SYNC</span>
+        <button class="btn btn-secondary btn-sm" onclick="state.compView='list';render()">← Kompetisi</button>
+      </div>
+    </div>
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:14px">
+      <div style="background:linear-gradient(135deg,var(--green-dk),var(--surface));padding:18px 20px;border-bottom:1px solid var(--border)">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+          <div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:3px">${comp.name}</div>
+            <div style="font-size:11px;color:var(--muted)">${GAME_TYPES[comp.type]?.icon} ${GAME_TYPES[comp.type]?.label} · ${comp.format==='round_robin'?'Round Robin':comp.format==='elimination'?'Eliminasi':'Grup+Eliminasi'}</div>
+          </div>
+          ${lm.length?renderBadge('badge-live',renderLiveDot()+lm.length+' LIVE'):''}
+        </div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:8px">Lapangan aktif:</div>
+        <div style="display:flex;flex-wrap:wrap">${compCourts.map(c=>`<div class="comp-court-chip" style="background:${c.color}cc">${c.name}</div>`).join('')}${!compCourts.length?`<span style="font-size:11px;color:var(--muted)">Semua lapangan</span>`:''}</div>
+      </div>
+      <div class="comp-tab-bar">
+        <button class="comp-tab ${t==='matches'?'active':''}" onclick="state.compDetailTab='matches';render()">Match (${cm.length})</button>
+        <button class="comp-tab ${t==='lb'?'active':''}" onclick="state.compDetailTab='lb';render()">Leaderboard</button>
+        <button class="comp-tab ${t==='courts'?'active':''}" onclick="state.compDetailTab='courts';render()">Live Courts</button>
+      </div>
+      <div style="padding:14px">${bodyHtml}</div>
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════════════
+//  PLAYERS PAGE
+// ═══════════════════════════════════════════════════════
+function renderPlayers(){
+  function stats(id){
+    const pm=state.matches.filter(m=>m.teams.some(t=>t.players.some(p=>p.id===id)));
+    const wins=pm.filter(m=>m.status==='finished'&&m.teams[m.winner]?.players.some(p=>p.id===id)).length;
+    return{played:pm.length,wins};
+  }
+  document.getElementById('page-players').innerHTML=`
+    <div class="sh"><div class="sh-title">PEMAIN (${state.players.length})</div><button class="btn btn-primary" onclick="toggleAddPlayer()">+ Tambah</button></div>
+    <div class="card hidden" id="add-player-form">
+      <div class="card-title">DAFTARKAN PEMAIN</div>
+      <div class="fg"><label class="flbl">Nama</label><input class="finput" id="new-player-name" placeholder="Nama lengkap"/></div>
+      <div class="fg"><label class="flbl">Rating: <b id="rating-lbl" style="color:var(--gold)">3.5 ⭐</b></label>
+        <input type="range" min="1" max="5" step="0.1" value="3.5" style="width:100%;accent-color:var(--green)" oninput="document.getElementById('rating-lbl').textContent=parseFloat(this.value).toFixed(1)+' ⭐'" id="new-player-rating"/>
+      </div>
+      <div class="g2"><button class="btn btn-primary" onclick="savePlayer()">Simpan</button><button class="btn btn-secondary" onclick="toggleAddPlayer()">Batal</button></div>
+    </div>
+    ${!state.players.length?`<div class="empty"><div class="empty-icon">👤</div><div class="empty-txt">Belum ada pemain</div></div>`:''}
+    ${state.players.map(p=>{const{played,wins}=stats(p.id);return`
+      <div class="pi" style="border-radius:12px;padding:12px 14px;margin-bottom:8px;cursor:default">
+        <div class="pi-av" style="width:40px;height:40px;font-size:16px">${p.name[0]}</div>
+        <div style="flex:1">
+          <div class="pi-name" style="font-size:14px;font-weight:600">${p.name}</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px">${played} Match · ${wins} Menang</div>
+        </div>
+        <div style="text-align:right;margin-right:10px"><div class="pi-rating" style="font-size:13px">⭐ ${p.rating}</div></div>
+        <button class="btn btn-danger btn-sm" onclick="deletePlayer('${p.id}')">✕</button>
+      </div>`;}).join('')}`;
+}
+function toggleAddPlayer(){document.getElementById('add-player-form').classList.toggle('hidden');}
+function savePlayer(){
+  const name=document.getElementById('new-player-name')?.value.trim();
+  if(!name)return;
+  const rating=parseFloat(document.getElementById('new-player-rating')?.value||3.5);
+  state.players.push({id:uid(),name,rating});
+  renderPlayers();
+}
+function deletePlayer(id){state.players=state.players.filter(p=>p.id!==id);render();}
+
+// ═══════════════════════════════════════════════════════
+//  GLOBAL ACTIONS
+// ═══════════════════════════════════════════════════════
+function doResetAll(){state.matches=[];state.liveMatchId=null;state.confirmReset=false;state.confirmResetMatch=false;render();}
+
+// ═══════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════
+render();
+</script>
+</body>
+</html>

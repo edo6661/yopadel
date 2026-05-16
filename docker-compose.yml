@@ -1,0 +1,13 @@
+services:
+  loan-app:
+    image: nginx:alpine
+    container_name: yopadel
+    restart: unless-stopped
+    volumes:
+      - ./:/usr/share/nginx/html:ro
+    networks:
+      - proxy-network
+
+networks:
+  proxy-network:
+    external: true
