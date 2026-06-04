@@ -1,7 +1,7 @@
 services:
-  loan-app:
+  keuangan-bumantara:
     image: nginx:alpine
-    container_name: yopadel
+    container_name: keuangan-bumantara
     restart: unless-stopped
     volumes:
       - ./:/usr/share/nginx/html:ro
